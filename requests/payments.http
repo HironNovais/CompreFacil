@@ -1,0 +1,41 @@
+@paymentUrl = http://localhost:3000
+@notificationUrl = http://localhost:3001
+
+### Saúde do Pagamento
+GET {{paymentUrl}}/health
+
+### Saúde da Notificação
+GET {{notificationUrl}}/health
+
+### Criar (execute primeiro; REST Client captura o id da resposta)
+# @name createPayment
+POST {{paymentUrl}}/payments
+Content-Type: application/json
+
+{
+  "customerName": "Cliente Teste",
+  "customerEmail": "cliente@exemplo.com",
+  "amount": 150.00,
+  "currency": "BRL"
+}
+
+### Consultar imediatamente (PENDENTE se ainda estiver processando)
+GET {{paymentUrl}}/payments/{{createPayment.response.body.$.id}}
+
+### Consultar novamente após cerca de 2 segundos (SUCESSO sem backlog/falhas)
+GET {{paymentUrl}}/payments/{{createPayment.response.body.$.id}}
+
+### Listar
+GET {{paymentUrl}}/payments?page=1&limit=10
+
+### Comprovar as duas notificações persistidas
+GET {{notificationUrl}}/notifications?paymentId={{createPayment.response.body.$.id}}
+
+### Validação: resposta 400
+POST {{paymentUrl}}/payments
+Content-Type: application/json
+
+{"amount": -1}
+
+### Não encontrado: resposta 404
+GET {{paymentUrl}}/payments/00000000-0000-4000-8000-000000000000

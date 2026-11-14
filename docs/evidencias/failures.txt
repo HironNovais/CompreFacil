@@ -1,0 +1,23 @@
+﻿
+> compre-facil-distribuido@1.0.0 test:failures
+> node --test --test-concurrency=1 tests/failures.test.js
+
+{"evidence":"notification_offline","paymentId":"5a5e5474-cde8-4106-a63e-c5531d25ef19","queued":2}
+✔ Notificação parada: pagamento conclui, duas mensagens ficam na fila e são consumidas ao voltar (4281.1832ms)
+✔ Reinício de Notificação mantém deduplicação persistente (3680.5137ms)
+{"evidence":"outbox_recovery","paymentId":"028d0432-4a2e-47fd-80ac-5bfdb4a92f71"}
+✔ RabbitMQ parado: API aceita em outbox e recupera publicação após reconectar (8295.7877ms)
+✔ Processo de Pagamento morto durante trabalho recupera tarefa não confirmada (4304.5183ms)
+✔ Pagamento parado: Notificação continua saudável e consumindo AMQP (3864.9821ms)
+{"evidence":"expected_database_disconnect","code":"57P01"}
+✔ PostgreSQL parado: API retorna 503, Notificação permanece disponível e banco recupera (7991.3079ms)
+✔ Recriar contêineres mantém PostgreSQL, filas e deduplicação nos volumes (4920.1747ms)
+✔ RabbitMQ reiniciado preserva mensagens duráveis enquanto Notificação está parada (11365.2757ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 49592.4729

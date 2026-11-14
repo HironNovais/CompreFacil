@@ -1,0 +1,43 @@
+﻿
+> compre-facil-distribuido@1.0.0 test
+> node --test payment-service/tests/*.test.js notification-service/tests/*.test.js
+
+✔ Dois tipos geram mensagens distintas e duplicata não gera nova notificação (5.9766ms)
+✔ Idempotência sobrevive ao fechamento e reabertura do SQLite em disco (22.1976ms)
+✔ Contrato rejeita JSON inválido, evento desconhecido e status incompatível (1.0539ms)
+✔ Consumidor confirma somente após handler concluir (1.3659ms)
+✔ Mensagem inválida é transferida à DLQ com confirmação antes do ack (0.4387ms)
+✔ Falha transitória republica com contador; após três retries envia à DLQ (500.9806ms)
+✔ Falha ao transferir mensagem faz nack com requeue e propaga para reconexão (0.6269ms)
+✔ Health degradado retorna 503 e não depende de Pagamento/PostgreSQL (39.2527ms)
+{"timestamp":"2026-11-14T21:46:40.612Z","service":"payment-service","level":"info","action":"payment_received","paymentId":"804a15d5-82fe-45b9-b8dc-e35f798bed6d","status":"PENDENTE"}
+✔ POST retorna 202 PENDENTE depois de persistir e sem depender de broker/notificação (57.1727ms)
+✔ Rejeita entrada inválida: vazio (12.219ms)
+✔ Rejeita entrada inválida: semNome (4.4478ms)
+✔ Rejeita entrada inválida: semEmail (4.4054ms)
+✔ Rejeita entrada inválida: zero (4.6553ms)
+✔ Rejeita entrada inválida: negativo (4.1839ms)
+✔ Rejeita entrada inválida: string (3.6703ms)
+✔ Rejeita entrada inválida: fracao (4.2185ms)
+✔ Rejeita entrada inválida: muitoAlto (5.4025ms)
+✔ Rejeita entrada inválida: subCentavo (4.8457ms)
+✔ Rejeita entrada inválida: fracaoProxima (4.2676ms)
+✔ Rejeita entrada inválida: moeda (3.9811ms)
+✔ Rejeita entrada inválida: lista (4.2443ms)
+✔ Rejeita entrada inválida: nulo (3.8267ms)
+✔ Centavos e acentos são preservados; NaN e Infinity são rejeitados (0.6681ms)
+✔ GET inexistente retorna 404; id malformado retorna 400 (7.3279ms)
+✔ Paginação valida limite e encaminha offset correto ao repositório (15.5835ms)
+✔ JSON malformado retorna 400 (4.127ms)
+{"timestamp":"2026-11-14T21:46:40.717Z","service":"payment-service","level":"error","action":"http_error","error":"SQL interno"}
+✔ Falha do banco retorna 503 sem detalhes SQL na resposta (4.1826ms)
+✔ Transação falha executa rollback e libera conexão (0.9565ms)
+✔ Outbox não marca publicado quando publisher confirm falha (0.3116ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1019.5874

@@ -1,0 +1,23 @@
+
+> compre-facil-distribuido@1.0.0 test:ui
+> playwright test --grep Pagamento real
+
+
+Running 2 tests using 1 worker
+
+node.exe : (node:7712) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+No linha:1 caractere:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\Hiron\AppData\Roaming\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:7712) War... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"evidence":"browser_payment","project":"desktop","paymentId":"acdeffc8-b50b-47db-a6b9-decba1b8785b","events":2}
+  ok 1 [desktop] › web\tests\demo.spec.js:4:1 › Pagamento real pela interface chega a SUCESSO e mostra os dois avisos (4.5s)
+(node:27156) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"evidence":"browser_payment","project":"mobile","paymentId":"25774b88-a831-4fe7-8679-d973029a0f58","events":2}
+  ok 2 [mobile] › web\tests\demo.spec.js:4:1 › Pagamento real pela interface chega a SUCESSO e mostra os dois avisos (4.4s)
+
+  2 passed (10.2s)

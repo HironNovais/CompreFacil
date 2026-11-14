@@ -1,0 +1,20 @@
+﻿
+> compre-facil-distribuido@1.0.0 test:integration
+> node --test --test-concurrency=1 tests/integration.test.js
+
+{"evidence":"complete_flow","paymentId":"6385a522-0e90-4be9-806f-18fe2aab1069","initial":"PENDENTE","final":"SUCESSO","eventIds":["24ca5a9f-6269-49d9-9a2a-e9eae20f4478","1131fb5b-714c-4ac4-b236-39f22e167125"]}
+✔ Fluxo real: 202 PENDENTE, SQL, SUCESSO e dois eventos/notificações em ordem (1739.4007ms)
+✔ API real rejeita requisições inválidas e retorna 404 para UUID inexistente (14.5941ms)
+✔ Banco real reverte pagamento e outbox quando a gravação falha (8.0453ms)
+✔ Worker é idempotente: confirmações concorrentes geram somente um evento (232.0479ms)
+✔ Duplicatas AMQP reais não geram novos registros de notificação (3809.1293ms)
+✔ Contrato inválido vai para DLQ real, sem loop de reprocessamento (293.4504ms)
+✔ Erro de processamento esgota três retries e preserva evento na DLQ (7690.9958ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13998.6303

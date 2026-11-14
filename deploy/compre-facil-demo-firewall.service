@@ -1,0 +1,14 @@
+[Unit]
+Description=Permitir somente a porta Docker 8088 do CompreFacil
+After=docker.service
+Requires=docker.service
+PartOf=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash /opt/compre-facil-distribuido/shared/firewall-vps.sh start
+ExecStop=/bin/bash /opt/compre-facil-distribuido/shared/firewall-vps.sh stop
+
+[Install]
+WantedBy=multi-user.target docker.service

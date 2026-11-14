@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#7058f5" />
+    <meta
+      name="description"
+      content="Laboratório acadêmico de pagamentos distribuídos: REST, PostgreSQL e RabbitMQ em funcionamento."
+    />
+    <title>CompreFácil · Laboratório de pagamentos</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%237058f5'/%3E%3Cpath d='M44 23a17 17 0 1 0 0 18M24 32h25m-8-8 8 8-8 8' stroke='white' stroke-width='5' fill='none'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-content">
+        <a class="brand" href="/" aria-label="CompreFácil, início">
+          <span class="brand-symbol" aria-hidden="true">c<span>↗</span></span>
+          <span
+            >Compre<span class="brand-accent">Fácil</span
+            ><small>LABORATÓRIO DISTRIBUÍDO</small></span
+          >
+        </a>
+        <nav aria-label="Navegação principal">
+          <a href="#laboratorio" class="nav-active">Laboratório</a>
+          <a href="#transacoes">Transações</a>
+          <a href="#arquitetura">Como funciona</a>
+        </nav>
+        <span class="demo-badge"
+          ><span class="dot"></span> Ambiente acadêmico</span
+        >
+      </div>
+    </header>
+
+    <main class="container" id="laboratorio">
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">SISTEMAS DISTRIBUÍDOS · SENAI</p>
+          <h1 id="page-title">
+            Um pagamento.<br class="mobile-break" />
+            Vários serviços em ação.
+          </h1>
+          <p class="intro-text">
+            Crie uma transação e acompanhe o caminho da solicitação até a
+            confirmação,<br class="desktop-break" />
+            com comunicação assíncrona e dados de verdade.
+          </p>
+        </div>
+        <div class="simulation-note">
+          <span aria-hidden="true">✧</span>
+          <div>
+            <strong>Experimente à vontade</strong>
+            <p>Use dados fictícios.<br />Nenhuma cobrança é realizada.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="health-grid" aria-label="Saúde dos componentes">
+        <div class="health-card">
+          <span class="health-icon" aria-hidden="true">↗</span>
+          <div>
+            <span class="health-name">API de Pagamento</span
+            ><span class="health-label" id="health-payment">Verificando…</span>
+          </div>
+          <span class="health-dot" id="dot-payment"></span>
+        </div>
+        <div class="health-card">
+          <span class="health-icon" aria-hidden="true">▤</span>
+          <div>
+            <span class="health-name">PostgreSQL</span
+            ><span class="health-label" id="health-database">Verificando…</span>
+          </div>
+          <span class="health-dot" id="dot-database"></span>
+        </div>
+        <div class="health-card">
+          <span class="health-icon" aria-hidden="true">⇄</span>
+          <div>
+            <span class="health-name">RabbitMQ</span
+            ><span class="health-label" id="health-rabbitmq">Verificando…</span>
+          </div>
+          <span class="health-dot" id="dot-rabbitmq"></span>
+        </div>
+        <div class="health-card">
+          <span class="health-icon" aria-hidden="true">♧</span>
+          <div>
+            <span class="health-name">Notificação</span
+            ><span class="health-label" id="health-notification"
+              >Verificando…</span
+            >
+          </div>
+          <span class="health-dot" id="dot-notification"></span>
+        </div>
+      </section>
+      <p
+        id="connection-warning"
+        class="connection-warning"
+        role="status"
+        hidden
+      ></p>
+
+      <div class="workspace-grid">
+        <section class="panel create-panel" aria-labelledby="form-title">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">01 / SOLICITAÇÃO</p>
+              <h2 id="form-title">Novo pagamento</h2>
+            </div>
+            <span class="small-icon" aria-hidden="true">＋</span>
+          </div>
+          <p class="section-description">
+            Comece por aqui. A resposta é imediata; o processamento acontece em
+            segundo plano.
+          </p>
+          <form id="payment-form">
+            <label for="customer-name">Nome do cliente</label>
+            <input
+              id="customer-name"
+              name="customerName"
+              autocomplete="off"
+              maxlength="120"
+              required
+              value="Cliente Demonstração"
+            />
+            <label for="customer-email">E-mail fictício</label>
+            <input
+              id="customer-email"
+              name="customerEmail"
+              type="email"
+              autocomplete="off"
+              maxlength="254"
+              required
+              value="cliente@exemplo.com"
+            />
+            <div class="form-row">
+              <div>
+                <label for="amount">Valor do pagamento</label>
+                <div class="amount-input">
+                  <span>R$</span
+                  ><input
+                    id="amount"
+                    name="amount"
+                    type="number"
+                    min="0.01"
+                    max="9999999999.99"
+                    step="0.01"
+                    required
+                    value="150.00"
+                  />
+                </div>
+              </div>
+              <div class="currency-field">
+                <label for="currency">Moeda</label
+                ><input
+                  id="currency"
+                  value="BRL"
+                  readonly
+                  aria-label="Moeda: real brasileiro"
+                />
+              </div>
+            </div>
+            <button id="submit-payment" class="primary-button" type="submit">
+              <span id="submit-label">Criar pagamento</span
+              ><span aria-hidden="true">↗</span>
+            </button>
+            <p
+              id="form-feedback"
+              class="form-feedback"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </form>
+          <div class="form-footnote">
+            <span aria-hidden="true">◷</span
+            ><span
+              >Confirmação simulada em cerca de 2 segundos,<br />quando os
+              serviços estão disponíveis.</span
+            >
+          </div>
+        </section>
+
+        <section class="panel tracking-panel" aria-labelledby="tracking-title">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">02 / PROCESSAMENTO</p>
+              <h2 id="tracking-title">Acompanhe em tempo real</h2>
+            </div>
+            <span class="live-badge"
+              ><span class="dot"></span> Atualização automática</span
+            >
+          </div>
+          <div id="tracking-empty" class="empty-state">
+            <span class="empty-orbit" aria-hidden="true">⇄</span>
+            <h3>O próximo movimento começa com você</h3>
+            <p>
+              Crie um pagamento ou selecione uma transação<br />no histórico
+              para acompanhar seus eventos.
+            </p>
+            <span class="empty-caption"
+              >REST → PostgreSQL → RabbitMQ → Notificação</span
+            >
+          </div>
+          <div id="tracking-content" hidden>
+            <div class="transaction-summary">
+              <div>
+                <span class="muted-label">Transação selecionada</span
+                ><button
+                  id="copy-id"
+                  class="copy-id"
+                  type="button"
+                  title="Copiar identificador"
+                >
+                  <code id="selected-id"></code
+                  ><span aria-hidden="true">▢</span>
+                </button>
+              </div>
+              <span id="selected-status" class="status-badge status-pending"
+                >PENDENTE</span
+              >
+            </div>
+            <div class="selected-payment">
+              <strong id="selected-amount"></strong
+              ><span id="selected-customer"></span>
+            </div>
+            <ol class="timeline">
+              <li id="step-created">
+                <span class="step-marker">1</span>
+                <div>
+                  <h3>Solicitação registrada</h3>
+                  <p>Transação persistida no PostgreSQL como PENDENTE.</p>
+                  <span class="step-meta" id="created-time"
+                    >Aguardando registro</span
+                  >
+                </div>
+              </li>
+              <li id="step-received">
+                <span class="step-marker">2</span>
+                <div>
+                  <h3>Recebimento notificado</h3>
+                  <p>
+                    Notificação consumiu SOLICITACAO_RECEBIDA pelo RabbitMQ.
+                  </p>
+                  <span class="step-meta" id="received-time"
+                    >Aguardando evento</span
+                  >
+                </div>
+              </li>
+              <li id="step-confirmed">
+                <span class="step-marker">3</span>
+                <div>
+                  <h3>Pagamento confirmado</h3>
+                  <p>O worker de Pagamento atualizou o estado para SUCESSO.</p>
+                  <span class="step-meta" id="confirmed-time"
+                    >Aguardando processamento</span
+                  >
+                </div>
+              </li>
+              <li id="step-notified">
+                <span class="step-marker">4</span>
+                <div>
+                  <h3>Confirmação notificada</h3>
+                  <p>
+                    Notificação consumiu PAGAMENTO_CONFIRMADO e registrou o
+                    aviso.
+                  </p>
+                  <span class="step-meta" id="notified-time"
+                    >Aguardando evento</span
+                  >
+                </div>
+              </li>
+            </ol>
+            <details class="event-details">
+              <summary>
+                Ver os eventos recebidos <span aria-hidden="true">↗</span>
+              </summary>
+              <pre id="events-json">[]</pre>
+            </details>
+          </div>
+        </section>
+      </div>
+
+      <section
+        class="panel history-panel"
+        id="transacoes"
+        aria-labelledby="history-title"
+      >
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">03 / PERSISTÊNCIA</p>
+            <h2 id="history-title">
+              Últimas transações
+              <span id="history-count" class="count-badge">0</span>
+            </h2>
+          </div>
+          <button id="refresh-history" class="secondary-button" type="button">
+            <span aria-hidden="true">↻</span> Atualizar
+          </button>
+        </div>
+        <p class="section-description">
+          Selecione uma transação para inspecionar o estado e as notificações.
+        </p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Transação / cliente</th>
+                <th>Valor</th>
+                <th>Estado</th>
+                <th>Criada em</th>
+                <th><span class="sr-only">Ação</span></th>
+              </tr>
+            </thead>
+            <tbody id="history-body">
+              <tr>
+                <td colspan="5" class="table-empty">Carregando transações…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="history-footer">
+          <span id="history-message">Até 10 transações por página</span>
+          <div>
+            <button
+              id="previous-page"
+              class="page-button"
+              type="button"
+              disabled
+              aria-label="Página anterior"
+            >
+              ←</button
+            ><span id="page-number">Página 1</span
+            ><button
+              id="next-page"
+              class="page-button"
+              type="button"
+              disabled
+              aria-label="Próxima página"
+            >
+              →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="architecture-panel"
+        id="arquitetura"
+        aria-labelledby="architecture-title"
+      >
+        <div class="architecture-intro">
+          <p class="section-kicker">POR TRÁS DE CADA TRANSAÇÃO</p>
+          <h2 id="architecture-title">
+            Independentes.<br />Conectados por eventos.
+          </h2>
+          <p>
+            A interface consulta as APIs. O processamento entre os serviços
+            acontece por AMQP, mesmo quando esta página está fechada.
+          </p>
+        </div>
+        <div class="architecture-flow">
+          <div class="architecture-node">
+            <span aria-hidden="true">↗</span><strong>Pagamento</strong
+            ><small>API REST + worker</small>
+          </div>
+          <span class="flow-arrow" aria-label="Publica eventos"
+            >→<small>AMQP</small></span
+          >
+          <div class="architecture-node node-broker">
+            <span aria-hidden="true">⇄</span><strong>RabbitMQ</strong
+            ><small>Filas persistentes</small>
+          </div>
+          <span class="flow-arrow" aria-label="Consome eventos"
+            >→<small>AMQP</small></span
+          >
+          <div class="architecture-node">
+            <span aria-hidden="true">♧</span><strong>Notificação</strong
+            ><small>Avisos + idempotência</small>
+          </div>
+        </div>
+      </section>
+      <footer class="site-footer">
+        <span
+          >CompreFácil <span class="footer-separator">/</span> Desafio 2 ·
+          Desenvolvimento de Sistemas Distribuídos</span
+        ><span>Projeto acadêmico · Pagamentos e avisos simulados</span>
+      </footer>
+    </main>
+    <noscript
+      ><p class="noscript">
+        Ative o JavaScript para usar o laboratório de pagamentos.
+      </p></noscript
+    >
+  </body>
+</html>

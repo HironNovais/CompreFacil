@@ -1,0 +1,122 @@
+name: compre-facil-demo
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "5m"
+    max-file: "2"
+services:
+  web:
+    image: compre-facil-web:${DEMO_RELEASE:-local}
+    build: ../web
+    ports:
+      - "${WEB_BIND:-0.0.0.0}:${WEB_PORT:-8088}:80"
+    depends_on:
+      payment-service: { condition: service_started }
+      notification-service: { condition: service_started }
+    mem_limit: 64m
+    cpus: 0.10
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 15
+    logging: *logging
+    restart: unless-stopped
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: cf_demo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configure POSTGRES_PASSWORD}
+      POSTGRES_DB: payments
+    command: ["postgres", "-c", "shared_buffers=32MB", "-c", "max_connections=25"]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../database/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    mem_limit: 256m
+    cpus: 0.35
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cf_demo -d payments"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    logging: *logging
+    restart: unless-stopped
+  rabbitmq:
+    image: rabbitmq:4.2-alpine
+    user: rabbitmq
+    hostname: cf-demo-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: cf_demo
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?Configure RABBITMQ_PASSWORD}
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "+S 1:1 +A 4"
+      RABBITMQ_CTL_ERL_ARGS: "+S 1:1 +A 2"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    mem_limit: 384m
+    cpus: 0.40
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 10s
+      start_period: 45s
+      retries: 30
+    logging: *logging
+    restart: unless-stopped
+  payment-service:
+    image: compre-facil-payment:${DEMO_RELEASE:-local}
+    build: ../payment-service
+    environment:
+      PORT: 3000
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: cf_demo
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Configure POSTGRES_PASSWORD}
+      PGDATABASE: payments
+      AMQP_HOST: rabbitmq
+      AMQP_USER: cf_demo
+      AMQP_PASSWORD: ${RABBITMQ_PASSWORD:?Configure RABBITMQ_PASSWORD}
+      PROCESSING_DELAY_MS: 1500
+      NODE_OPTIONS: --max-old-space-size=80
+    depends_on:
+      postgres: { condition: service_healthy }
+      rabbitmq: { condition: service_healthy }
+    mem_limit: 160m
+    cpus: 0.25
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 4s
+      retries: 15
+    logging: *logging
+    init: true
+    stop_grace_period: 15s
+    restart: unless-stopped
+  notification-service:
+    image: compre-facil-notification:${DEMO_RELEASE:-local}
+    build: ../notification-service
+    environment:
+      PORT: 3001
+      AMQP_HOST: rabbitmq
+      AMQP_USER: cf_demo
+      AMQP_PASSWORD: ${RABBITMQ_PASSWORD:?Configure RABBITMQ_PASSWORD}
+      NOTIFICATION_DB: /app/data/notifications.db
+      NODE_OPTIONS: --max-old-space-size=64
+    volumes:
+      - notification_data:/app/data
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+    mem_limit: 128m
+    cpus: 0.20
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 4s
+      retries: 15
+    logging: *logging
+    init: true
+    stop_grace_period: 15s
+    restart: unless-stopped
+volumes:
+  postgres_data:
+  rabbitmq_data:
+  notification_data:

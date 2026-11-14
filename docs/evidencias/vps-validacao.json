@@ -1,0 +1,85 @@
+{
+  "capturedAt": "2026-11-14T22:58:10.644Z",
+  "publicUrl": "http://187.127.6.251:8088",
+  "release": {
+    "releaseId": "20261114T225238Z",
+    "archiveSha256": "6a6b120847b42e3c0369451b21f3b83f7a1c36b13e4553f4207f7963067a927a"
+  },
+  "health": {
+    "payment": {
+      "status": "ok",
+      "service": "payment-service",
+      "database": true,
+      "rabbitmq": true
+    },
+    "notification": {
+      "status": "ok",
+      "service": "notification-service",
+      "rabbitmq": true,
+      "storage": true
+    }
+  },
+  "payment": {
+    "id": "acdeffc8-b50b-47db-a6b9-decba1b8785b",
+    "customerName": "Professor desktop",
+    "customerEmail": "cliente@exemplo.com",
+    "amount": "150.00",
+    "currency": "BRL",
+    "status": "SUCESSO",
+    "createdAt": "2026-11-14T22:56:05.633Z",
+    "updatedAt": "2026-11-14T22:56:07.293Z"
+  },
+  "notifications": {
+    "data": [
+      {
+        "eventId": "95a17f55-11c8-49f5-b9a2-9a2d216ad03a",
+        "paymentId": "acdeffc8-b50b-47db-a6b9-decba1b8785b",
+        "eventType": "SOLICITACAO_RECEBIDA",
+        "message": "[NOTIFICACAO] Solicitação de pagamento recebida. Transação: acdeffc8-b50b-47db-a6b9-decba1b8785b",
+        "processedAt": "2026-11-14T22:56:05.796Z"
+      },
+      {
+        "eventId": "0619f5f5-5a90-4054-a9ff-2f931cc47bc9",
+        "paymentId": "acdeffc8-b50b-47db-a6b9-decba1b8785b",
+        "eventType": "PAGAMENTO_CONFIRMADO",
+        "message": "[NOTIFICACAO] Pagamento confirmado com sucesso. Transação: acdeffc8-b50b-47db-a6b9-decba1b8785b",
+        "processedAt": "2026-11-14T22:56:07.345Z"
+      }
+    ]
+  },
+  "publicAssets": [
+    {
+      "path": "/",
+      "sha256": "919da78ac2ef481d0dad758b115db0a936bf0f9563bd1e403f38ddc09b25fc5a",
+      "matchesLocal": true
+    },
+    {
+      "path": "/styles.css",
+      "sha256": "c3bcdd5c7f27f6d0d2298a539bdc05d49b2828ad45e55f2312344991e624949a",
+      "matchesLocal": true
+    },
+    {
+      "path": "/app.js",
+      "sha256": "afd22e4242412e3b41e37e4027848fe82b6fc59fc1ca0b23d3f47693b2a2d3c3",
+      "matchesLocal": true
+    }
+  ],
+  "serverSourceFilesVerified": 32,
+  "existingContainers": {
+    "containersCompared": 21,
+    "unchanged": 21,
+    "changedOrMissing": []
+  },
+  "salaPrivadaAfter": {
+    "publicHomeHttpStatus": 200,
+    "internalApiHealthHttpStatus": 200
+  },
+  "publicBrowserTests": {
+    "passed": 2,
+    "failed": 0,
+    "projects": [
+      "desktop",
+      "mobile"
+    ]
+  }
+}

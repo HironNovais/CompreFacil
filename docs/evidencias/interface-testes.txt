@@ -1,0 +1,31 @@
+
+> compre-facil-distribuido@1.0.0 test:ui
+> playwright test
+
+
+Running 10 tests using 1 worker
+
+node.exe : (node:26712) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+No linha:1 caractere:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\Hiron\AppData\Roaming\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:26712) Wa... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"evidence":"browser_payment","project":"desktop","paymentId":"586cde15-78ec-4da2-9a5c-d9c9c47038ef","events":2}
+  ok  1 [desktop] › web\tests\demo.spec.js:4:1 › Pagamento real pela interface chega a SUCESSO e mostra os dois avisos (4.1s)
+  ok  2 [desktop] › web\tests\demo.spec.js:69:1 › Validação do formulário impede envio de valor zero (297ms)
+  ok  3 [desktop] › web\tests\demo.spec.js:85:1 › Conteúdo digitado é exibido como texto, sem executar HTML (321ms)
+  ok  4 [desktop] › web\tests\demo.spec.js:100:1 › Degradação de serviço aparece na tela sem inventar estado do banco (249ms)
+  ok  5 [desktop] › web\tests\demo.spec.js:121:1 › Resposta incerta não reenvia POST automaticamente (2.1s)
+(node:22312) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"evidence":"browser_payment","project":"mobile","paymentId":"7eb282e7-ab4c-41bb-86b4-eef4b38b5407","events":2}
+  ok  6 [mobile] › web\tests\demo.spec.js:4:1 › Pagamento real pela interface chega a SUCESSO e mostra os dois avisos (4.3s)
+  ok  7 [mobile] › web\tests\demo.spec.js:69:1 › Validação do formulário impede envio de valor zero (552ms)
+  ok  8 [mobile] › web\tests\demo.spec.js:85:1 › Conteúdo digitado é exibido como texto, sem executar HTML (453ms)
+  ok  9 [mobile] › web\tests\demo.spec.js:100:1 › Degradação de serviço aparece na tela sem inventar estado do banco (259ms)
+  ok 10 [mobile] › web\tests\demo.spec.js:121:1 › Resposta incerta não reenvia POST automaticamente (2.1s)
+
+  10 passed (16.3s)

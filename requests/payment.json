@@ -1,0 +1,6 @@
+{
+  "customerName": "Cliente Teste",
+  "customerEmail": "cliente@exemplo.com",
+  "amount": 150.00,
+  "currency": "BRL"
+}

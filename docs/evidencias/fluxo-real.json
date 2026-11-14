@@ -1,0 +1,83 @@
+{
+  "capturedAt": "2026-11-14T21:48:15.346Z",
+  "timezone": "America/Sao_Paulo",
+  "environment": {
+    "host": "win32",
+    "hostNode": "v24.22.1",
+    "containerNode": "v24.22.3",
+    "postgres": "postgres (PostgreSQL) 17.12",
+    "rabbitmq": "4.2.9",
+    "compose": "Docker Compose version v5.1.3"
+  },
+  "health": {
+    "payment": {
+      "status": "ok",
+      "service": "payment-service",
+      "database": true,
+      "rabbitmq": true
+    },
+    "notification": {
+      "status": "ok",
+      "service": "notification-service",
+      "rabbitmq": true,
+      "storage": true
+    }
+  },
+  "accepted": {
+    "id": "97668c1a-cae4-48b7-bf64-e737222e2ded",
+    "status": "PENDENTE",
+    "message": "Pagamento recebido para processamento"
+  },
+  "final": {
+    "id": "97668c1a-cae4-48b7-bf64-e737222e2ded",
+    "customerName": "Teste 390d7110-5dbc-4c46-89e1-61c8499f91ec",
+    "customerEmail": "teste@exemplo.com",
+    "amount": "150.29",
+    "currency": "BRL",
+    "status": "SUCESSO",
+    "createdAt": "2026-11-14T21:48:13.461Z",
+    "updatedAt": "2026-11-14T21:48:15.082Z"
+  },
+  "outbox": [
+    {
+      "event_id": "55a0d128-a4b1-431c-9c89-faa2c777716f",
+      "event_type": "SOLICITACAO_RECEBIDA",
+      "payload": {
+        "status": "PENDENTE",
+        "eventId": "55a0d128-a4b1-431c-9c89-faa2c777716f",
+        "eventType": "SOLICITACAO_RECEBIDA",
+        "paymentId": "97668c1a-cae4-48b7-bf64-e737222e2ded",
+        "occurredAt": "2026-11-14T21:48:13.461Z"
+      },
+      "published_at": "2026-11-14T21:48:13.579Z"
+    },
+    {
+      "event_id": "1e0ca3d3-e1be-4c5a-9d1b-5a4b08793a3e",
+      "event_type": "PAGAMENTO_CONFIRMADO",
+      "payload": {
+        "status": "SUCESSO",
+        "eventId": "1e0ca3d3-e1be-4c5a-9d1b-5a4b08793a3e",
+        "eventType": "PAGAMENTO_CONFIRMADO",
+        "paymentId": "97668c1a-cae4-48b7-bf64-e737222e2ded",
+        "occurredAt": "2026-11-14T21:48:15.084Z"
+      },
+      "published_at": "2026-11-14T21:48:15.095Z"
+    }
+  ],
+  "notifications": [
+    {
+      "eventId": "55a0d128-a4b1-431c-9c89-faa2c777716f",
+      "paymentId": "97668c1a-cae4-48b7-bf64-e737222e2ded",
+      "eventType": "SOLICITACAO_RECEBIDA",
+      "message": "[NOTIFICACAO] Solicitação de pagamento recebida. Transação: 97668c1a-cae4-48b7-bf64-e737222e2ded",
+      "processedAt": "2026-11-14T21:48:13.582Z"
+    },
+    {
+      "eventId": "1e0ca3d3-e1be-4c5a-9d1b-5a4b08793a3e",
+      "paymentId": "97668c1a-cae4-48b7-bf64-e737222e2ded",
+      "eventType": "PAGAMENTO_CONFIRMADO",
+      "message": "[NOTIFICACAO] Pagamento confirmado com sucesso. Transação: 97668c1a-cae4-48b7-bf64-e737222e2ded",
+      "processedAt": "2026-11-14T21:48:15.130Z"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "compre-facil-distribuido",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Desafio 2 SENAI: pagamentos distribuídos com REST e AMQP",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "setup": "npm ci --prefix payment-service && npm ci --prefix notification-service",
+    "test": "node --test payment-service/tests/*.test.js notification-service/tests/*.test.js",
+    "test:integration": "node --test --test-concurrency=1 tests/integration.test.js",
+    "test:failures": "node --test --test-concurrency=1 tests/failures.test.js",
+    "check": "node scripts/check-syntax.js",
+    "evidence": "node scripts/evidence.js",
+    "test:ui": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1"
+  }
+}

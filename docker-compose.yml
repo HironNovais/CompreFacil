@@ -1,0 +1,101 @@
+name: compre-facil-distribuido
+services:
+  web:
+    build: ./web
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8088}:80"
+    depends_on:
+      payment-service: { condition: service_started }
+      notification-service: { condition: service_started }
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-compre_facil}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_academic_password}
+      POSTGRES_DB: ${POSTGRES_DB:-payments}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-55432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  rabbitmq:
+    image: rabbitmq:4.2-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-compre_facil}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-local_academic_password}
+    ports:
+      - "127.0.0.1:${AMQP_PORT:-5672}:5672"
+      - "127.0.0.1:${RABBITMQ_UI_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    hostname: rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+  payment-service:
+    build: ./payment-service
+    environment:
+      PORT: 3000
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: ${POSTGRES_USER:-compre_facil}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-local_academic_password}
+      PGDATABASE: ${POSTGRES_DB:-payments}
+      AMQP_HOST: rabbitmq
+      AMQP_USER: ${RABBITMQ_USER:-compre_facil}
+      AMQP_PASSWORD: ${RABBITMQ_PASSWORD:-local_academic_password}
+      PROCESSING_DELAY_MS: ${PROCESSING_DELAY_MS:-1500}
+    ports:
+      - "127.0.0.1:${PAYMENT_PORT:-3000}:3000"
+    depends_on:
+      postgres: { condition: service_healthy }
+      rabbitmq: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+    init: true
+    stop_grace_period: 15s
+    restart: unless-stopped
+  notification-service:
+    build: ./notification-service
+    environment:
+      PORT: 3001
+      AMQP_HOST: rabbitmq
+      AMQP_USER: ${RABBITMQ_USER:-compre_facil}
+      AMQP_PASSWORD: ${RABBITMQ_PASSWORD:-local_academic_password}
+      NOTIFICATION_DB: /app/data/notifications.db
+    ports:
+      - "127.0.0.1:${NOTIFICATION_PORT:-3001}:3001"
+    volumes:
+      - notification_data:/app/data
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+    init: true
+    stop_grace_period: 15s
+    restart: unless-stopped
+volumes:
+  postgres_data:
+  rabbitmq_data:
+  notification_data:
