@@ -1,6 +1,8 @@
 # CompreFácil — processamento distribuído de pagamentos
 
-**[Abrir demonstração no navegador](http://187.127.6.251:8088)** · **[Repositório no GitHub](https://github.com/HironNovais/CompreFacil)**
+**[Abrir demonstração HTTPS no navegador](https://probability-vid-calvin-jersey.trycloudflare.com)** · **[Repositório no GitHub](https://github.com/HironNovais/CompreFacil)**
+
+O endereço público usa um túnel gratuito temporário: pode mudar se o conector reiniciar e não tem garantia de disponibilidade. O acesso direto à porta 8088 da VPS foi fechado. Detalhes e recuperação do link em [docs/vps.md](docs/vps.md).
 
 ## 1. Apresentação
 
@@ -75,7 +77,7 @@ flowchart LR
 │   └── package.json + package-lock.json
 ├── database/init.sql
 ├── web/{public/,tests/,Dockerfile,nginx.conf}
-├── deploy/{vps-compose.yml,install-vps.sh,.env.vps.example}
+├── deploy/{vps-compose.yml,tunnel-compose.yml,install-vps.sh,.env.vps.example}
 ├── tests/{integration.test.js,failures.test.js,helpers.js}
 ├── scripts/
 ├── requests/{payments.http,payment.json}

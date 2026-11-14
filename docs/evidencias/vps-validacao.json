@@ -1,6 +1,6 @@
 {
   "capturedAt": "2026-11-14T22:58:10.644Z",
-  "publicUrl": "http://187.127.6.251:8088",
+  "publicUrl": "[endereco HTTP de origem omitido]",
   "release": {
     "releaseId": "20261114T225238Z",
     "archiveSha256": "6a6b120847b42e3c0369451b21f3b83f7a1c36b13e4553f4207f7963067a927a"
@@ -81,5 +81,6 @@
       "desktop",
       "mobile"
     ]
-  }
+  },
+  "redactionNote": "Somente o endereco original foi omitido nesta revisao. Os resultados e instantes continuam sendo da validacao HTTP anterior ao tunel HTTPS."
 }

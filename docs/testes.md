@@ -38,6 +38,8 @@ O Compose de desenvolvimento e o Compose específico da VPS foram validados sepa
 
 Na VPS, os dois cenários de pagamento real da suíte visual foram reexecutados pelo **IP público**, com desktop e mobile simulado, e passaram. São repetições públicas desses casos, não dois casos inéditos que aumentariam o total de 54. A verificação comparou também integridade de arquivos e os contêineres existentes da Sala Privada.
 
+Depois, os mesmos dois cenários passaram novamente pelo **Quick Tunnel HTTPS**. Nessa etapa, a publicação externa de 8088 foi encerrada, a exceção de firewall foi removida e os 21 contêineres existentes da Sala Privada permaneceram com os mesmos IDs. O snapshot separado [tunnel-validacao.json](evidencias/tunnel-validacao.json) e o relatório [tunnel-testes.txt](evidencias/tunnel-testes.txt) registram essa revisão, sem alterar os resultados históricos anteriores.
+
 Saídas completas: [unitários/API](evidencias/unitarios.txt), [integração](evidencias/integration.txt), [falhas](evidencias/failures.txt). O script `npm run evidence` cria **outro pagamento simulado real** e atualiza o [snapshot de ponta a ponta](evidencias/fluxo-real.json) e os [logs correspondentes](evidencias/fluxo-real.log.txt); ele não reexecuta nem altera os relatórios das suítes.
 
 ## Cenários, procedimentos e resultados

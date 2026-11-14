@@ -2,7 +2,7 @@
 
 Repositório escolhido pelo autor: **https://github.com/HironNovais/CompreFacil**.
 
-Demonstração no navegador: **http://187.127.6.251:8088**.
+Demonstração HTTPS no navegador: **https://probability-vid-calvin-jersey.trycloudflare.com**. O link temporário pode mudar quando o túnel reinicia; consulte [vps.md](vps.md).
 
 ## Obter e executar o código
 
@@ -26,7 +26,7 @@ O PDF do Desafio 2 pede entregar **o link do repositório remoto com código e i
 
 ```text
 Código e instruções: https://github.com/HironNovais/CompreFacil
-Demonstração no navegador: http://187.127.6.251:8088
+Demonstração no navegador: https://probability-vid-calvin-jersey.trycloudflare.com
 ```
 
 O endereço da demonstração complementa o repositório. A submissão no AVA deve ser feita pelo aluno. Inclua nome, turma e matrícula conforme solicitado pelo professor.

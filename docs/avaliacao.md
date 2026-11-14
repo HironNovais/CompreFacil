@@ -6,7 +6,7 @@ Reserve cerca de 5–10 minutos. Use o README para instalação; este roteiro de
 
 Abra `http://localhost:8088` localmente ou o endereço da VPS registrado em [vps.md](vps.md). A página já mostra a saúde de Pagamento, PostgreSQL, RabbitMQ e Notificação. Os campos têm valores fictícios prontos: clique em **Criar pagamento**, observe `PENDENTE → SUCESSO`, os quatro passos e os dois avisos em **Ver os eventos recebidos**. Selecione uma transação no histórico para consultar novamente. O professor não precisa instalar programas para acessar essa demonstração hospedada.
 
-A prova por navegador complementa a entrega do código. O link do repositório com instruções continua obrigatório no AVA; não substitua esse link pelo IP da demonstração.
+A prova por navegador complementa a entrega do código. O link do repositório com instruções continua obrigatório no AVA; não substitua esse link pelo endereço da demonstração.
 
 ## 1. Mostrar a separação
 

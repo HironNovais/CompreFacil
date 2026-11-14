@@ -17,7 +17,7 @@ if [ ! -s "$env_file" ]; then
   {
     printf 'POSTGRES_PASSWORD=%s\n' "$(openssl rand -hex 24)"
     printf 'RABBITMQ_PASSWORD=%s\n' "$(openssl rand -hex 24)"
-    printf 'WEB_BIND=0.0.0.0\nWEB_PORT=8088\n'
+    printf 'WEB_BIND=127.0.0.1\nWEB_PORT=8088\n'
   } > "$env_file"
 fi
 chmod 600 "$env_file"

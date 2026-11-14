@@ -70,7 +70,7 @@ Pagamento não depende do processo de Notificação para criar ou concluir trans
 - PostgreSQL suporta consumidores concorrentes pelo bloqueio por pagamento; o publicador de outbox foi serializado para simplicidade e ordenação. Throughput, particionamento, clusters, failover e balanceamento não foram avaliados.
 - Um único nó RabbitMQ e os volumes locais não garantem sobrevivência à perda do host/disco. Não há replicação, backup automático ou alta disponibilidade de infraestrutura.
 - O POST não tem chave de idempotência de cliente: repetir um POST cria outro pagamento. Após timeout/503, verifique a consulta/listagem antes de reenviar; confirmação de COMMIT pode ser ambígua numa perda de conexão.
-- O Compose de desenvolvimento publica portas somente em loopback. O Compose da VPS publica apenas o Nginx em 8088; banco, RabbitMQ e APIs permanecem sem portas públicas. O gateway limita POSTs por IP; as APIs diretas de desenvolvimento não possuem esse limite. A demonstração não tem autenticação, gateway financeiro, TLS por IP ou política de retenção. Use somente dados fictícios.
+- O Compose de desenvolvimento e o Nginx da VPS vinculam portas somente a loopback. O acesso público da VPS passa por um Quick Tunnel HTTPS; banco, RabbitMQ e APIs permanecem sem portas públicas. O limite de POSTs é compartilhado entre visitantes do túnel porque o gateway vê o conector interno. A demonstração não tem autenticação, gateway financeiro ou política de retenção. Use somente dados fictícios.
 - Valores usam `NUMERIC(12,2)` e são devolvidos como **string decimal** na consulta; somente BRL e até duas casas são aceitos. Datas são armazenadas em UTC/TIMESTAMPTZ.
 - Outbox e histórico não têm limpeza automática, para permitir auditoria acadêmica. Inclua retenção em uma evolução de produção.
 - A execução de CI só se comprova após publicação no GitHub. A instalação Linux na VPS tem validação separada em `docs/vps.md`.
@@ -82,6 +82,8 @@ O quinto contêiner é Nginx, que serve HTML/CSS/JavaScript sem framework e enca
 O Nginx resolve nomes da rede Docker em runtime, acompanhando a recriação das APIs. O histórico e o conteúdo digitado usam nós de texto, sem interpolação de HTML. Requisições POST não são repetidas automaticamente após timeout. Os estados dos quatro passos vêm das APIs; a tela não fabrica eventos nem simula aprovação no cliente.
 
 O Compose específico de VPS usa projeto/rede/volumes `compre-facil-demo`, credenciais próprias, logs rotativos e limites de CPU/memória. Não conecta nenhum contêiner à rede da Sala Privada. O host físico continua compartilhado, portanto essa separação não equivale a um domínio de falha independente.
+
+O arquivo adicional `deploy/tunnel-compose.yml` executa `cloudflared` na mesma rede da demonstração, sem portas publicadas. A rota HTTPS aponta ao Nginx interno; `127.0.0.1:8088` fica disponível apenas no próprio servidor. O hostname temporário pode mudar ao reiniciar o conector; detalhes de operação e limites estão em `docs/vps.md`.
 
 ## Fontes técnicas
 

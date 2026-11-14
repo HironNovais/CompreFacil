@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# LEGADO: não ativar na instalação atual com Quick Tunnel e WEB_BIND=127.0.0.1.
+
 # Exceção somente para a porta ORIGINAL 8088 publicada pelo CompreFácil.
 # Após DNAT ela vira 80; não liberar genericamente a porta de destino 80.
 rule=(-p tcp -m conntrack --ctdir ORIGINAL --ctorigdstport 8088 -m comment --comment compre-facil-demo-8088 -j RETURN)
