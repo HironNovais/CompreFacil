@@ -1,8 +1,69 @@
 # CompreFácil — processamento distribuído de pagamentos
 
-**[Abrir demonstração HTTPS no navegador](https://probability-vid-calvin-jersey.trycloudflare.com)** · **[Repositório no GitHub](https://github.com/HironNovais/CompreFacil)**
+## Para o professor: duas formas de avaliar
 
-O endereço público usa um túnel gratuito temporário: pode mudar se o conector reiniciar e não tem garantia de disponibilidade. O acesso direto à porta 8088 da VPS foi fechado. Detalhes e recuperação do link em [docs/vps.md](docs/vps.md).
+Escolha uma das opções abaixo. As duas permitem testar a mesma aplicação pelo navegador, com aprovação de pagamento e notificações simuladas.
+
+### Opção 1 — testar diretamente na VPS
+
+**Acesse: [https://probability-vid-calvin-jersey.trycloudflare.com/](https://probability-vid-calvin-jersey.trycloudflare.com/)**
+
+Essa opção já está hospedada e não exige instalar programas, baixar o código ou executar comandos. Basta abrir o link no Chrome ou em outro navegador atualizado.
+
+O endereço HTTPS usa um túnel gratuito temporário: pode mudar se o conector reiniciar e não tem garantia de disponibilidade. Se o link estiver indisponível, utilize a opção de execução local abaixo. Os detalhes da hospedagem estão em [docs/vps.md](docs/vps.md).
+
+### Opção 2 — executar na própria máquina
+
+Nesta opção, os serviços e os dados ficam na máquina do avaliador. A execução local não depende da VPS nem do túnel público.
+
+**Pré-requisitos:**
+
+- No Windows ou macOS: Docker Desktop instalado e iniciado. No Windows, utilize contêineres Linux.
+- No Linux: Docker Engine e o plugin Docker Compose instalados e em execução.
+- Internet no primeiro build para baixar imagens e dependências.
+- Git, se optar pelo comando de clonagem; o download ZIP dispensa Git.
+
+Não é necessário instalar Node.js, npm, PostgreSQL ou RabbitMQ na máquina para executar a aplicação pelo Docker. O Compose prepara os cinco contêineres, a rede, as tabelas e os volumes automaticamente. O arquivo `.env` é opcional: os valores locais de demonstração já estão configurados.
+
+**1. Obter o projeto.** No terminal, clone o repositório e entre na pasta:
+
+```bash
+git clone https://github.com/HironNovais/CompreFacil.git
+cd CompreFacil
+```
+
+Como alternativa, [baixe o projeto em ZIP](https://github.com/HironNovais/CompreFacil/archive/refs/heads/main.zip), extraia o arquivo e abra um terminal na pasta que contém `docker-compose.yml`.
+
+**2. Iniciar a aplicação.** Com Docker em execução, use estes comandos na pasta do projeto. Eles funcionam em PowerShell, terminal do VS Code ou Bash:
+
+```bash
+docker compose up --build -d
+docker compose ps
+```
+
+Aguarde os cinco contêineres aparecerem como `healthy`. O primeiro build pode demorar alguns minutos. Se ainda aparecer `health: starting`, execute `docker compose ps` novamente após alguns instantes.
+
+**3. Abrir a interface:** [http://localhost:8088](http://localhost:8088).
+
+Se houver conflito de portas, consulte a [seção 7 — Pré-requisitos](#7-pré-requisitos) e personalize as portas no `.env` conforme a [seção 8 — Instalação e execução](#8-instalação-e-execução). Se o Docker informar que não consegue conectar ao daemon, confira se Docker Desktop ou Docker Engine está iniciado.
+
+**4. Encerrar depois da avaliação.** Na mesma pasta, execute:
+
+```bash
+docker compose down
+```
+
+Os dados locais permanecem nos volumes. Para usar a aplicação novamente, execute `docker compose up -d` e abra `http://localhost:8088`.
+
+### O que verificar em qualquer uma das opções
+
+1. Confira a saúde de Pagamento, PostgreSQL, RabbitMQ e Notificação no topo da página.
+2. Mantenha os dados fictícios de exemplo e clique em **Criar pagamento**. Não haverá cobrança nem envio de mensagens externas.
+3. Acompanhe o estado inicial `PENDENTE` e a atualização para `SUCESSO`, normalmente em cerca de dois segundos, com os serviços disponíveis.
+4. Confira os avisos de recebimento e confirmação. Abra **Ver os eventos recebidos** para consultar os dois tipos de evento e seus identificadores.
+5. Selecione uma transação no histórico para consultar novamente seus dados e avisos persistidos.
+
+Para aprofundar a avaliação, consulte [os testes e evidências](docs/testes.md), [a arquitetura](docs/arquitetura.md) e [o roteiro de apresentação](docs/avaliacao.md). Código-fonte: [HironNovais/CompreFacil](https://github.com/HironNovais/CompreFacil).
 
 ## 1. Apresentação
 
